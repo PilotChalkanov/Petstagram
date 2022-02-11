@@ -29,7 +29,8 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-DJANGO_APPS = ( 'django.contrib.admin',
+DJANGO_APPS = (
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -81,10 +82,14 @@ WSGI_APPLICATION = 'petstagram.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+
+        'default': {
+        'NAME': 'petstagram_main',
+        'ENGINE': 'django.db.backends.postgresql',
+        'USER': 'postgres',
+        'PASSWORD': '12345'
+    },
+
 }
 
 
