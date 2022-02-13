@@ -110,7 +110,7 @@ class Photo(models.Model):
 
     photo = models.ImageField(
         validators=(
-            validate_file_max_size_in_mb(5),
+            # validate_file_max_size_in_mb(5),
         )
     )
 
@@ -127,5 +127,5 @@ class Photo(models.Model):
         auto_now_add=True,
     )
     likes = models.IntegerField(
-        default=0,
+        default=1,
     )

@@ -10,23 +10,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name="Pet",
-            fields=[
-                (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
-                ("name", models.CharField(max_length=30, unique=True)),
-                ("type", models.CharField(choices=[], max_length=6)),
-                ("date_of_birth", models.DateField(blank=True, null=True)),
-            ],
-        ),
+
         migrations.AlterModelTable(
             name="profile",
             table="user_profiles",
