@@ -6,21 +6,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0001_initial'),
+        ("main", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Pet',
+            name="Pet",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=30, unique=True)),
-                ('type', models.CharField(choices=[], max_length=6)),
-                ('date_of_birth', models.DateField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=30, unique=True)),
+                ("type", models.CharField(choices=[], max_length=6)),
+                ("date_of_birth", models.DateField(blank=True, null=True)),
             ],
         ),
         migrations.AlterModelTable(
-            name='profile',
-            table='user_profiles',
+            name="profile",
+            table="user_profiles",
         ),
     ]

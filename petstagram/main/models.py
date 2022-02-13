@@ -3,7 +3,7 @@ from django.db import models
 
 from petstagram.main.validators import contains_only_letters
 
-'''
+"""
 The user must provide the following information in their profile:
 The first name - it should have at least 2 chars, max - 30 chars, and should consist only of letters.
 The last name - it should have at least 2 chars, max - 30 chars, and should consist only of letters.
@@ -14,38 +14,31 @@ Date of birth: day, month, and year of birth.
 Description - a user can write any description about themselves, no limit of words/chars.
 Email - a user can only write a valid email address.
 Gender - the user can choose one of the following: "Male", "Female", and "Do not show".
-'''
+"""
+
 
 class Profile(models.Model):
-
-    class Meta:
-        db_table = "user_profiles"
 
     FIRST_NAME_MIN_LEN = 2
     FIRST_NAME_MAX_LEN = 30
     LAST_NAME_MIN_LEN = 2
     LAST_NAME_MAX_LEN = 30
 
-    MALE = 'Male'
-    FEMALE = 'Female'
-    DO_NOT_SHOW = 'Do not show'
+    MALE = "Male"
+    FEMALE = "Female"
+    DO_NOT_SHOW = "Do not show"
 
-    GENDERS = [(x,x) for x in (MALE, FEMALE, DO_NOT_SHOW)]
+    GENDERS = [(x, x) for x in (MALE, FEMALE, DO_NOT_SHOW)]
 
+    # Fields
     first_name = models.CharField(
         max_length=FIRST_NAME_MAX_LEN,
-        validators = (
-            MinLengthValidator(FIRST_NAME_MIN_LEN),
-            contains_only_letters
-        )
+        validators=(MinLengthValidator(FIRST_NAME_MIN_LEN), contains_only_letters),
     )
 
     last_name = models.CharField(
         max_length=LAST_NAME_MAX_LEN,
-        validators = (
-            MinLengthValidator(LAST_NAME_MIN_LEN),
-            contains_only_letters
-        )
+        validators=(MinLengthValidator(LAST_NAME_MIN_LEN), contains_only_letters),
     )
 
     picture = models.URLField()
@@ -60,21 +53,25 @@ class Profile(models.Model):
         blank=True,
     )
 
-    email = models.EmailField(
-        null = True,
-        blank=True
-    )
+    email = models.EmailField(null=True, blank=True)
 
     gender = models.CharField(
-        max_length=max(len(x) for x,_ in GENDERS),
+        max_length=max(len(x) for x, _ in GENDERS),
         choices=GENDERS,
         null=True,
         blank=True,
     )
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+    class Meta:
+        db_table = "user_profiles"
+
+
 class Pet(models.Model):
 
-    #Constants
+    # Constants
     CAT = "Cat"
     DOG = "Dog"
     BUNNY = "Bunny"
@@ -82,16 +79,13 @@ class Pet(models.Model):
     FISH = "Fish"
     OTHER = "Other"
 
-    TYPES = ((x,x) for x in (CAT, DOG, BUNNY, PARROT, FISH, OTHER))
+    TYPES = [(x, x) for x in (CAT, DOG, BUNNY, PARROT, FISH, OTHER)]
 
     # Fields(Columns)
-    name = models.CharField(
-        max_length=30,
-        unique=True
-    )
+    name = models.CharField(max_length=30, unique=True)
     type = models.CharField(
-        max_length=max(len(x) for x,_ in TYPES),
-        choices=TYPES
+        max_length=max(len(x) for x, _ in TYPES),
+        choices=TYPES,
     )
 
     date_of_birth = models.DateField(
@@ -99,4 +93,33 @@ class Pet(models.Model):
         blank=True,
     )
 
+    # relations
+    user_id = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+    )
 
+    def __str__(self):
+        return f"{self.name} - {self.type}"
+
+    class Meta:
+        unique_together = ("user_id", "name")
+
+
+class Photo(models.Model):
+
+    tagged_pets = models.ManyToManyField(
+        Pet,
+    )
+
+    description = models.TextField(
+        null=True,
+        blank=True,
+    )
+
+    created_on = models.DateTimeField(
+        auto_now_add=True,
+    )
+    likes = models.IntegerField(
+        default=0,
+    )
