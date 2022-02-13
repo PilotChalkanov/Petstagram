@@ -1,7 +1,7 @@
 from django.core.validators import MinLengthValidator
 from django.db import models
 
-from petstagram.main.validators import contains_only_letters
+from petstagram.main.validators import validate_contains_only_letters, validate_file_max_size_in_mb
 
 """
 The user must provide the following information in their profile:
@@ -33,12 +33,12 @@ class Profile(models.Model):
     # Fields
     first_name = models.CharField(
         max_length=FIRST_NAME_MAX_LEN,
-        validators=(MinLengthValidator(FIRST_NAME_MIN_LEN), contains_only_letters),
+        validators=(MinLengthValidator(FIRST_NAME_MIN_LEN), validate_contains_only_letters),
     )
 
     last_name = models.CharField(
         max_length=LAST_NAME_MAX_LEN,
-        validators=(MinLengthValidator(LAST_NAME_MIN_LEN), contains_only_letters),
+        validators=(MinLengthValidator(LAST_NAME_MIN_LEN), validate_contains_only_letters),
     )
 
     picture = models.URLField()
@@ -107,6 +107,12 @@ class Pet(models.Model):
 
 
 class Photo(models.Model):
+
+    photo = models.ImageField(
+        validators=(
+            validate_file_max_size_in_mb(5),
+        )
+    )
 
     tagged_pets = models.ManyToManyField(
         Pet,

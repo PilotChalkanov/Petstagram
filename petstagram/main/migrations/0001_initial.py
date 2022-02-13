@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                         max_length=30,
                         validators=[
                             django.core.validators.MinLengthValidator(2),
-                            petstagram.main.validators.contains_only_letters,
+                            petstagram.main.validators.validate_contains_only_letters,
                         ],
                     ),
                 ),
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
                         max_length=30,
                         validators=[
                             django.core.validators.MinLengthValidator(2),
-                            petstagram.main.validators.contains_only_letters,
+                            petstagram.main.validators.validate_contains_only_letters,
                         ],
                     ),
                 ),
