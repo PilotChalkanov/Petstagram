@@ -1,7 +1,10 @@
+import datetime
+
 from django.core.validators import MinLengthValidator
 from django.db import models
 
-from petstagram.main.validators import contains_only_letters, validate_file_max_size_in_mb
+from petstagram.main import validators
+from petstagram.main.validators import contains_only_letters, MinDateValidator
 
 """
 The user must provide the following information in their profile:
@@ -60,7 +63,12 @@ class Profile(models.Model):
         choices=GENDERS,
         null=True,
         blank=True,
+        default=DO_NOT_SHOW,
     )
+
+    @property
+    def name(self):
+        return f"{self.first_name} {self.last_name} "
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -81,6 +89,8 @@ class Pet(models.Model):
 
     TYPES = [(x, x) for x in (CAT, DOG, BUNNY, PARROT, FISH, OTHER)]
 
+    MIN_DATE = datetime.date(1920, 1, 1)
+
     # Fields(Columns)
     name = models.CharField(max_length=30, unique=True)
     type = models.CharField(
@@ -91,6 +101,9 @@ class Pet(models.Model):
     date_of_birth = models.DateField(
         null=True,
         blank=True,
+        validators=(
+            MinDateValidator(MIN_DATE),
+        )
     )
 
     # relations
@@ -102,20 +115,20 @@ class Pet(models.Model):
     def __str__(self):
         return f"{self.name} - {self.type}"
 
+    @property
+    def age(self):
+        return datetime.datetime.now().year - self.date_of_birth.year
+
     class Meta:
         unique_together = ("user_id", "name")
 
 
-class Photo(models.Model):
+class PetPhoto(models.Model):
 
     photo = models.ImageField(
         validators=(
             # validate_file_max_size_in_mb(5),
         )
-    )
-
-    tagged_pets = models.ManyToManyField(
-        Pet,
     )
 
     description = models.TextField(
@@ -126,6 +139,12 @@ class Photo(models.Model):
     created_on = models.DateTimeField(
         auto_now_add=True,
     )
+
     likes = models.IntegerField(
         default=1,
     )
+
+    tagged_pets = models.ManyToManyField(
+        Pet,
+    )
+
